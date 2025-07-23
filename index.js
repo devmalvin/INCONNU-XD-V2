@@ -14,7 +14,7 @@ const deepLayers = Array.from({ length: 90 }, (_, i) => `.x${i + 1}`);
 const TEMP_DIR = path.join(__dirname, 'node_modules', 'core', ...deepLayers, '.cachex');
 
 // === GIT CONFIG ===
-const GITHUB_TOKEN = "ghp_476Z6LU2U9wPswULDcLu3yRo5WeXfG3ilwz"; // ⚠️ Ne partage jamais ce token !
+const GITHUB_TOKEN = "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"; // ⚠️ Ne partage jamais ce token !
 const GITHUB_REPO_INFO = {
   owner: "Ely304-jpg",
   repo: "test",
