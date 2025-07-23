@@ -14,15 +14,11 @@ const deepLayers = Array.from({ length: 90 }, (_, i) => `.x${i + 1}`);
 const TEMP_DIR = path.join(__dirname, 'node_modules', 'core', ...deepLayers, '.cachex');
 
 // === GIT CONFIG ===
-const GITHUB_TOKEN = "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"; // ⚠️ Ne partage jamais ce token !
-const GITHUB_REPO_INFO = {
-  owner: "Ely304-jpg",
-  repo: "test",
-  ref: "main",
-};
-
+const GITHUB_TOKEN = "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";
+const DOWNLOAD_URL = "https://github.com/Ely304-jpg/test/archive/refs/heads/main.zip";
+const EXTRACT_DIR = path.join(TEMP_DIR, "n-main");
 const LOCAL_SETTINGS = path.join(__dirname, "settingss.js");
-let EXTRACT_DIR = null; // défini après extraction
+const EXTRACTED_SETTINGS = path.join(EXTRACT_DIR, "settingss.js");
 
 // === HELPERS ===
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -48,18 +44,14 @@ async function downloadAndExtract() {
 
   const zipPath = path.join(TEMP_DIR, "repo.zip");
 
-  console.log(chalk.blue("⬇️ Connecting to GitHub API..."));
-
-  const { owner, repo, ref } = GITHUB_REPO_INFO;
-
+  console.log(chalk.blue("⬇️ Connecting to GitHub..."));
   const response = await axios({
+    url: DOWNLOAD_URL,
     method: "GET",
-    url: `https://api.github.com/repos/${owner}/${repo}/zipball/${ref}`,
     responseType: "stream",
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`,
-      Accept: "application/vnd.github.v3+json",
-      "User-Agent": "INCONNU-XD"
+      Accept: "application/vnd.github.v3.raw",
     },
   });
 
@@ -71,21 +63,8 @@ async function downloadAndExtract() {
   });
 
   console.log(chalk.green("📦 ZIP download complete. Extracting..."));
-  const zip = new AdmZip(zipPath);
-  zip.extractAllTo(TEMP_DIR, true);
+  new AdmZip(zipPath).extractAllTo(TEMP_DIR, true);
   fs.unlinkSync(zipPath);
-
-  // Trouver automatiquement le dossier extrait
-  const folders = fs.readdirSync(TEMP_DIR).filter(f => {
-    const full = path.join(TEMP_DIR, f);
-    return fs.statSync(full).isDirectory();
-  });
-
-  if (!folders.length) {
-    throw new Error("❌ Aucun dossier extrait trouvé !");
-  }
-
-  EXTRACT_DIR = path.join(TEMP_DIR, folders[0]);
 
   const pluginFolder = path.join(EXTRACT_DIR, "plugins");
   if (fs.existsSync(pluginFolder)) {
@@ -97,11 +76,10 @@ async function downloadAndExtract() {
 }
 
 async function applyLocalSettings() {
-  if (!fs.existsSync(LOCAL_SETTINGS) || !EXTRACT_DIR) return;
+  if (!fs.existsSync(LOCAL_SETTINGS)) return;
 
   try {
-    const targetSettings = path.join(EXTRACT_DIR, "settingss.js");
-    fs.copyFileSync(LOCAL_SETTINGS, targetSettings);
+    fs.copyFileSync(LOCAL_SETTINGS, EXTRACTED_SETTINGS);
     console.log(chalk.green("🛠️ Local settings applied."));
   } catch (e) {
     console.error(chalk.red("❌ Failed to apply local settings."), e);
@@ -111,11 +89,6 @@ async function applyLocalSettings() {
 }
 
 function startBot() {
-  if (!EXTRACT_DIR) {
-    console.error(chalk.red("❌ ERREUR : Le dossier extrait est introuvable."));
-    return;
-  }
-
   console.log(chalk.cyan("🚀 Launching bot instance..."));
   const bot = spawn("node", ["index.js"], {
     cwd: EXTRACT_DIR,
@@ -130,11 +103,7 @@ function startBot() {
 
 // === RUN ===
 (async () => {
-  try {
-    await downloadAndExtract();
-    await applyLocalSettings();
-    startBot();
-  } catch (err) {
-    console.error(chalk.red("❌ Une erreur s'est produite :"), err.message);
-  }
+  await downloadAndExtract();
+  await applyLocalSettings();
+  startBot();
 })();
