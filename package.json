@@ -9,7 +9,11 @@
     "stop": "pm2 stop INCONNU-XD",
     "restart": "pm2 restart INCONNU-XD"
   },
-  "keywords": ["inconnu-boy", "whatsapp-bot", "whatsapp md bot"],
+  "keywords": [
+    "inconnu-boy",
+    "whatsapp-bot",
+    "whatsapp md bot"
+  ],
   "author": "INCONNU BOY",
   "license": "ISC",
   "dependencies": {
@@ -50,7 +54,7 @@
     "os": "^0.1.2",
     "pdfkit": "^0.15.0",
     "pino": "^8.20.0",
-    "pm2": "^5.4.0",
+    "pm2": "latest",
     "proto": "^1.0.19",
     "qrcode": "^1.5.3",
     "qrcode-terminal": "^0.12.0",
